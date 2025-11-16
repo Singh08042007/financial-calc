@@ -6,8 +6,13 @@ const signInBtn = document.getElementById('btn-sign-in');
 const signOutBtn = document.getElementById('btn-sign-out');
 const userMenu = document.getElementById('user-menu');
 const authModal = document.getElementById('auth-modal');
+const upiField = document.getElementById('upi-field');
 
-signInBtn.addEventListener('click', () => authModal.showModal());
+signInBtn.addEventListener('click', () => {
+  authModal.showModal();
+  upiField.style.display = 'none'; // Hide UPI field by default when modal opens
+});
+
 signOutBtn.addEventListener('click', async () => {
   await signOut();
   userMenu.hidden = true;
@@ -16,6 +21,7 @@ signOutBtn.addEventListener('click', async () => {
 
 document.getElementById('auth-do-signin').addEventListener('click', async (e) => {
   e.preventDefault();
+  upiField.style.display = 'none'; // Hide UPI field when signing in
   const emailInput = document.getElementById('auth-email');
   const passwordInput = document.getElementById('auth-password');
   const email = emailInput.value.trim();
@@ -54,6 +60,13 @@ document.getElementById('auth-do-signin').addEventListener('click', async (e) =>
 
 document.getElementById('auth-do-signup').addEventListener('click', async (e) => {
   e.preventDefault();
+  
+  // Show UPI field if hidden
+  if (upiField.style.display === 'none' || !upiField.style.display) {
+    upiField.style.display = 'grid';
+    return; // Don't submit yet, let user fill UPI
+  }
+  
   try {
     const email = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-password').value;
@@ -88,19 +101,6 @@ document.getElementById('auth-do-signup').addEventListener('click', async (e) =>
       await showAlert(err.message, 'Sign Up Error');
     }
   }
-});
-
-// Show/hide UPI field when switching between sign in and create account
-const signInBtn = document.getElementById('auth-do-signin');
-const signUpBtn = document.getElementById('auth-do-signup');
-const upiField = document.getElementById('upi-field');
-
-signUpBtn.addEventListener('click', () => {
-  upiField.style.display = 'grid';
-});
-
-signInBtn.addEventListener('click', () => {
-  upiField.style.display = 'none';
 });
 
 async function refreshAuthUI(session) {
