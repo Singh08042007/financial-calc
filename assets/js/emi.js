@@ -125,10 +125,12 @@ async function loadLoans() {
   try {
     const loans = await db.listLoans();
     loansTableBody.innerHTML = '';
+    let totalMonthlyEmi = 0;
     for (const L of loans) {
       const payments = await db.listPayments(L.id);
       const nextDue = await computeNextDue(L.start_date, L.months, L.id, payments);
       const remaining = await computeRemaining(L, payments);
+      if (remaining > 1) totalMonthlyEmi += (Number(L.monthly_emi) || 0);
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${L.name}</td>
@@ -142,6 +144,8 @@ async function loadLoans() {
         </td>`;
       loansTableBody.appendChild(tr);
     }
+    const totalEl = document.getElementById('total-monthly-emi');
+    if (totalEl) totalEl.textContent = fmtCurrency(totalMonthlyEmi);
   } catch (err) { console.error(err); }
 }
 
