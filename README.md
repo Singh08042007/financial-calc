@@ -36,6 +36,25 @@ CREATE POLICY "Anyone can read profiles"
   ON user_profiles FOR SELECT
   USING (true);
 
+-- Trigger to auto-create user profile from auth metadata
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (user_id, upi_id)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'upi_id', 'not-set@upi')
+  )
+  ON CONFLICT (user_id) 
+  DO UPDATE SET upi_id = COALESCE(EXCLUDED.upi_id, user_profiles.upi_id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
 -- Loans table
 CREATE TABLE loans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

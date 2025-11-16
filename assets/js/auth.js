@@ -37,6 +37,19 @@ document.getElementById('auth-do-signin').addEventListener('click', async (e) =>
     console.log('Sign in result:', result);
     
     if (result.session) {
+      // Check if there's a pending UPI ID to save
+      const pendingUPI = localStorage.getItem('pending_upi_' + result.user.id);
+      if (pendingUPI) {
+        try {
+          const { db } = await import('./supabase.js');
+          await db.saveUserProfile(result.user.id, pendingUPI);
+          localStorage.removeItem('pending_upi_' + result.user.id);
+          console.log('Saved pending UPI profile');
+        } catch (err) {
+          console.error('Failed to save pending UPI:', err);
+        }
+      }
+      
       authModal.close();
       emailInput.value = '';
       passwordInput.value = '';

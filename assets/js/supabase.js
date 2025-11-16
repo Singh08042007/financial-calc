@@ -30,15 +30,25 @@ export async function signUp(email, password, upiId) {
   });
   if (error) throw error;
   
-  // Also store in user_profiles table if user was created
+  // Store in user_profiles table if user was created
   if (data.user) {
     try {
-      await supa.from('user_profiles').upsert({
+      const { error: profileError } = await supa.from('user_profiles').insert({
         user_id: data.user.id,
         upi_id: upiId
       });
-    } catch (profileError) {
-      console.error('Error saving user profile:', profileError);
+      
+      if (profileError) {
+        console.error('Error saving user profile:', profileError);
+        // Store in localStorage as backup to retry later
+        localStorage.setItem('pending_upi_' + data.user.id, upiId);
+      }
+    } catch (err) {
+      console.error('Exception saving user profile:', err);
+      // Store in localStorage as backup
+      if (data.user) {
+        localStorage.setItem('pending_upi_' + data.user.id, upiId);
+      }
     }
   }
   
@@ -117,6 +127,21 @@ export const db = {
       .eq('user_id', userId)
       .single();
     if (error && error.code !== 'PGRST116') throw error; // PGRST116 = not found
+    return data;
+  },
+  
+  async saveUserProfile(userId, upiId) {
+    const { data, error } = await supa
+      .from('user_profiles')
+      .upsert({
+        user_id: userId,
+        upi_id: upiId
+      }, {
+        onConflict: 'user_id'
+      })
+      .select()
+      .single();
+    if (error) throw error;
     return data;
   },
 };
