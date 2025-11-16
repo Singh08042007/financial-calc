@@ -149,14 +149,39 @@ input:focus, select:focus { outline: 2px solid var(--primary); outline-offset: 2
 
 /* Dialog */
 dialog::backdrop { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-dialog { border: none; background: transparent; }
+dialog { 
+  border: none; 
+  background: transparent; 
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
 dialog .card h2 { color: var(--text); margin: 0 0 8px 0; }
 dialog .card h3 { color: var(--text); margin: 0 0 16px 0; }
 dialog .card .muted { color: var(--muted); margin-bottom: 16px; }
 
 /* Custom dialogs */
 .custom-dialog::backdrop { background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); }
-.dialog-card { max-width: 420px; min-width: 300px; }
+.custom-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
+.dialog-card { max-width: 420px; min-width: 300px; margin: auto; }
 .dialog-message { color: var(--text); line-height: 1.6; margin: 0 0 16px 0; }
 .dialog-input {
   width: 100%; background: var(--bg-soft); color: var(--text);
