@@ -1,0 +1,10 @@
+# Netlify configuration for SPA routing
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build]
+  publish = "."
+  command = "echo 'No build needed - static site'"

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FinPilot — EMI & Budget Tracker</title>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+    <div class="app">
+      <header class="app-header">
+        <div class="brand">
+          <span class="logo">⟡</span>
+          <h1>FinPilot</h1>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn" data-route="emi-calc">EMI Calculator</button>
+          <button class="nav-btn" data-route="emi-tracker">EMI Tracker</button>
+          <button class="nav-btn" data-route="budget">Budget Tracker</button>
+          <button class="nav-btn" data-route="calc">Calculator</button>
+        </nav>
+        <div class="auth-area">
+          <button id="btn-theme" class="btn icon" title="Toggle Theme">🌓</button>
+          <button id="btn-sign-in" class="btn primary">Sign In</button>
+          <div id="user-menu" class="user-menu" hidden>
+            <button id="user-menu-btn" class="btn icon">👤</button>
+            <div class="user-dropdown">
+              <div id="auth-status" class="user-email"></div>
+              <button id="btn-sign-out" class="btn ghost">Sign Out</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="view">
+        <!-- Auth Modal -->
+        <dialog id="auth-modal">
+          <form method="dialog" class="card auth-card" id="auth-form">
+            <h2>Welcome</h2>
+            <p class="muted">Sign in or create an account</p>
+            <label>
+              <span>Email</span>
+              <input type="email" id="auth-email" required />
+            </label>
+            <label>
+              <span>Password</span>
+              <input type="password" id="auth-password" minlength="6" required />
+            </label>
+            <div class="row g">
+              <button class="btn primary" id="auth-do-signin">Sign In</button>
+              <button class="btn" id="auth-do-signup" type="button">Create Account</button>
+            </div>
+            <button class="btn ghost" value="cancel">Close</button>
+          </form>
+        </dialog>
+
+        <!-- EMI Calculator -->
+        <section id="route-emi-calc" class="route active">
+          <div class="section-header">
+            <h2>EMI Calculator</h2>
+            <div class="actions">
+              <button class="btn" id="emi-save-loan">Save as Loan</button>
+            </div>
+          </div>
+          <div class="grid two">
+            <div class="card">
+              <div class="form">
+                <label>
+                  <span>Principal (₹)</span>
+                  <input type="number" id="emi-principal" min="0" step="0.01" value="100000" placeholder="e.g., 100000" />
+                </label>
+                <label>
+                  <span>Annual Interest (%)</span>
+                  <input type="number" id="emi-rate" min="0" step="0.01" value="10" placeholder="e.g., 10.5" />
+                </label>
+                <label>
+                  <span>Tenure (months)</span>
+                  <input type="number" id="emi-months" min="1" step="1" value="12" placeholder="e.g., 12" />
+                </label>
+                <label>
+                  <span>Start Date</span>
+                  <input type="date" id="emi-start" />
+                </label>
+                <button class="btn primary" id="emi-calc-btn">Calculate</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="results">
+                <div class="stat"><span>Monthly EMI</span><strong id="emi-monthly">—</strong></div>
+                <div class="stat"><span>Total Interest</span><strong id="emi-interest">—</strong></div>
+                <div class="stat"><span>Total Payment</span><strong id="emi-total">—</strong></div>
+              </div>
+              <div class="scroll">
+                <table class="table" id="emi-table">
+                  <thead>
+                    <tr>
+                      <th>#</th><th>Due</th><th>EMI</th><th>Principal</th><th>Interest</th><th>Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- EMI Tracker -->
+        <section id="route-emi-tracker" class="route">
+          <div class="section-header">
+            <h2>EMI Tracker</h2>
+            <div class="actions">
+              <button class="btn primary" id="loan-add-open">Add Loan</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="scroll scroll-x">
+              <table class="table" id="loans-table">
+                <thead>
+                  <tr>
+                    <th>Name</th><th>EMI</th><th>Next Due</th><th>Remaining</th><th>Status</th><th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <dialog id="loan-modal">
+            <form method="dialog" class="card" id="loan-form">
+              <h3>Add Loan</h3>
+              <label><span>Name</span><input type="text" id="loan-name" placeholder="e.g., Home Loan" required /></label>
+              <label><span>Principal (₹)</span><input type="number" id="loan-principal" min="0" step="0.01" placeholder="e.g., 500000" required /></label>
+              <label><span>Annual Rate (%)</span><input type="number" id="loan-rate" min="0" step="0.01" placeholder="e.g., 8.5" required /></label>
+              <label><span>Months</span><input type="number" id="loan-months" min="1" step="1" placeholder="e.g., 60" required /></label>
+              <label><span>Start Date</span><input type="date" id="loan-start" required /></label>
+              <div class="row g"><button class="btn primary" id="loan-save">Save</button><button class="btn" value="cancel">Cancel</button></div>
+            </form>
+          </dialog>
+          <dialog id="payment-modal">
+            <form method="dialog" class="card payment-card" id="payment-form">
+              <h3>💳 Pay EMI</h3>
+              <div class="payment-instructions">
+                <p class="payment-label">Please pay via Google Pay to:</p>
+                <div class="payment-details">
+                  <div class="payment-name">Gagandeep Singh</div>
+                  <div class="payment-upi">gagandeepcheemamandvi-1@okhdfcbank</div>
+                  <button type="button" class="btn ghost" id="copy-upi" title="Copy UPI ID">📋 Copy UPI</button>
+                </div>
+                <div class="payment-amount-display">
+                  <span>EMI Amount</span>
+                  <strong id="payment-emi-amount">₹0.00</strong>
+                </div>
+              </div>
+              <label>
+                <span>Amount Paid (₹)</span>
+                <input type="number" id="payment-amount" min="0" step="0.01" placeholder="Enter amount paid" required />
+              </label>
+              <div class="row g">
+                <button class="btn primary" id="payment-confirm">Record Payment</button>
+                <button class="btn" value="cancel">Cancel</button>
+              </div>
+            </form>
+          </dialog>
+        </section>
+
+        <!-- Budget Tracker -->
+        <section id="route-budget" class="route">
+          <div class="section-header">
+            <h2>Budget Tracker</h2>
+            <div class="actions">
+              <button class="btn" id="budget-add-cat">Add Category</button>
+              <button class="btn primary" id="txn-add-open">Add Transaction</button>
+            </div>
+          </div>
+          <div class="grid two">
+            <div class="card">
+              <h3>This Month</h3>
+              <div id="budget-summary" class="summary"></div>
+            </div>
+            <div class="card">
+              <div class="scroll">
+                <table class="table" id="txn-table">
+                  <thead>
+                    <tr><th>Date</th><th>Type</th><th>Category</th><th>Note</th><th>Amount</th><th></th></tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <dialog id="txn-modal">
+            <form method="dialog" class="card" id="txn-form">
+              <h3>Add Transaction</h3>
+              <label><span>Date</span><input type="date" id="txn-date" required /></label>
+              <label><span>Type</span>
+                <select id="txn-type"><option value="income">Income</option><option value="expense">Expense</option></select>
+              </label>
+              <label><span>Category</span><input type="text" id="txn-category" list="cat-list" placeholder="e.g., Salary, Rent, Food" required /></label>
+              <datalist id="cat-list"></datalist>
+              <label><span>Note</span><input type="text" id="txn-note" placeholder="Optional description" /></label>
+              <label><span>Amount (₹)</span><input type="number" id="txn-amount" min="0" step="0.01" placeholder="e.g., 5000" required /></label>
+              <div class="row g"><button class="btn primary" id="txn-save">Save</button><button class="btn" value="cancel">Cancel</button></div>
+            </form>
+          </dialog>
+        </section>
+
+        <!-- Calculator -->
+        <section id="route-calc" class="route">
+          <div class="section-header"><h2>Calculator</h2></div>
+          <div class="card calculator">
+            <input id="calc-display" class="calc-display" type="text" readonly />
+            <div class="calc-grid" id="calc-keys"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        <span>FinPilot • Yours to control</span>
+      </footer>
+    </div>
+
+    <!-- Config: copy config.example.js to config.js and fill keys -->
+    <script type="module" src="assets/js/background.js"></script>
+    <script type="module" src="assets/js/notifications.js"></script>
+    <script type="module" src="assets/js/ui.js"></script>
+    <script type="module" src="assets/js/supabase.js"></script>
+    <script type="module" src="assets/js/auth.js"></script>
+    <script type="module" src="assets/js/emi.js"></script>
+    <script type="module" src="assets/js/budget.js"></script>
+    <script type="module" src="assets/js/calculator.js"></script>
+  </body>
+  </html>

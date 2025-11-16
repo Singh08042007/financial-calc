@@ -1,0 +1,7 @@
+# Files to ignore during deployment
+node_modules/
+.git/
+.vscode/
+*.log
+server.ps1
+README.md

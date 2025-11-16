@@ -1,0 +1,9 @@
+{
+  "name": "finpilot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Responsive EMI & Budget Tracker with Supabase auth",
+  "scripts": {
+    "dev": "npx serve ."
+  }
+}
