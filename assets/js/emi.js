@@ -133,12 +133,14 @@ async function loadLoans() {
       const remaining = await computeRemaining(L, payments);
       if (remaining > 1) totalMonthlyEmi += (Number(L.monthly_emi) || 0);
       totalRemaining += (Number(remaining) || 0);
+      const emisLeft = Math.max(0, (L.months || 0) - payments.length);
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${L.name}</td>
         <td>${fmtCurrency(L.monthly_emi)}</td>
         <td>${nextDue ?? '—'}</td>
         <td>${fmtCurrency(remaining)}</td>
+        <td>${emisLeft}</td>
         <td>${remaining <= 1 ? 'Paid' : 'Active'}</td>
         <td>
           <button class="btn" data-action="pay" data-id="${L.id}">Pay EMI</button>
