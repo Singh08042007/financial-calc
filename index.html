@@ -52,6 +52,10 @@
               <span>Password</span>
               <input type="password" id="auth-password" minlength="6" required />
             </label>
+            <label id="upi-field" style="display: none;">
+              <span>Your UPI ID (for receiving payments)</span>
+              <input type="text" id="auth-upi" placeholder="yourname@upi" />
+            </label>
             <div class="row g">
               <button class="btn primary" id="auth-do-signin">Sign In</button>
               <button class="btn" id="auth-do-signup" type="button">Create Account</button>
@@ -145,10 +149,10 @@
             <form method="dialog" class="card payment-card" id="payment-form">
               <h3>💳 Pay EMI</h3>
               <div class="payment-instructions">
-                <p class="payment-label">Please pay via Google Pay to:</p>
+                <p class="payment-label">Please pay via UPI to:</p>
                 <div class="payment-details">
-                  <div class="payment-name">Gagandeep Singh</div>
-                  <div class="payment-upi">gagandeepcheemamandvi-1@okhdfcbank</div>
+                  <div class="payment-name" id="payment-borrower-name">Loading...</div>
+                  <div class="payment-upi" id="payment-borrower-upi">Loading...</div>
                   <button type="button" class="btn ghost" id="copy-upi" title="Copy UPI ID">📋 Copy UPI</button>
                 </div>
                 <div class="payment-amount-display">

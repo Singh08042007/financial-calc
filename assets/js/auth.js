@@ -57,16 +57,29 @@ document.getElementById('auth-do-signup').addEventListener('click', async (e) =>
   try {
     const email = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-password').value;
-    const result = await signUp(email, password);
+    const upiId = document.getElementById('auth-upi').value.trim();
+    
+    if (!upiId) {
+      await showAlert('Please enter your UPI ID to receive payments', 'UPI ID Required');
+      return;
+    }
+    
+    const result = await signUp(email, password, upiId);
     
     // Check if email confirmation is required
     if (result.user && !result.session) {
       await showAlert('Check your email to confirm your account, then sign in.', 'Confirm Email');
+      document.getElementById('upi-field').style.display = 'none';
+      document.getElementById('auth-upi').value = '';
     } else if (result.session) {
       toast('Account created and signed in!', 'success');
       authModal.close();
+      document.getElementById('upi-field').style.display = 'none';
+      document.getElementById('auth-upi').value = '';
     } else {
       toast('Account created. You can now sign in.', 'success');
+      document.getElementById('upi-field').style.display = 'none';
+      document.getElementById('auth-upi').value = '';
     }
   } catch (err) {
     if (err.message.includes('already registered')) {
@@ -75,6 +88,19 @@ document.getElementById('auth-do-signup').addEventListener('click', async (e) =>
       await showAlert(err.message, 'Sign Up Error');
     }
   }
+});
+
+// Show/hide UPI field when switching between sign in and create account
+const signInBtn = document.getElementById('auth-do-signin');
+const signUpBtn = document.getElementById('auth-do-signup');
+const upiField = document.getElementById('upi-field');
+
+signUpBtn.addEventListener('click', () => {
+  upiField.style.display = 'grid';
+});
+
+signInBtn.addEventListener('click', () => {
+  upiField.style.display = 'none';
 });
 
 async function refreshAuthUI(session) {

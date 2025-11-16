@@ -18,9 +18,31 @@ export async function signIn(email, password) {
   if (error) throw error; return data;
 }
 
-export async function signUp(email, password) {
-  const { data, error } = await supa.auth.signUp({ email, password });
-  if (error) throw error; return data;
+export async function signUp(email, password, upiId) {
+  const { data, error } = await supa.auth.signUp({ 
+    email, 
+    password,
+    options: {
+      data: {
+        upi_id: upiId
+      }
+    }
+  });
+  if (error) throw error;
+  
+  // Also store in user_profiles table if user was created
+  if (data.user) {
+    try {
+      await supa.from('user_profiles').upsert({
+        user_id: data.user.id,
+        upi_id: upiId
+      });
+    } catch (profileError) {
+      console.error('Error saving user profile:', profileError);
+    }
+  }
+  
+  return data;
 }
 
 export async function signOut() { await supa.auth.signOut(); }
@@ -85,5 +107,16 @@ export const db = {
   async deleteTransaction(id) {
     const { error } = await supa.from('transactions').delete().eq('id', id);
     if (error) throw error;
+  },
+  
+  // user profiles
+  async getUserProfile(userId) {
+    const { data, error } = await supa
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = not found
+    return data;
   },
 };

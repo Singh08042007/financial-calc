@@ -197,17 +197,26 @@ loansTableBody.addEventListener('click', async (e) => {
     const loan = loans.find((x) => x.id === id);
     if (!loan) return;
     
+    // Get loan owner's profile
+    const profile = await db.getUserProfile(loan.user_id);
+    const borrowerUPI = profile?.upi_id || 'No UPI ID found';
+    const borrowerEmail = profile?.user_id || 'Unknown';
+    
     // Show custom payment modal
     const paymentModal = document.getElementById('payment-modal');
     const paymentAmountDisplay = document.getElementById('payment-emi-amount');
     const paymentAmountInput = document.getElementById('payment-amount');
+    const borrowerNameEl = document.getElementById('payment-borrower-name');
+    const borrowerUPIEl = document.getElementById('payment-borrower-upi');
     
     paymentAmountDisplay.textContent = fmtCurrency(loan.monthly_emi);
     paymentAmountInput.value = loan.monthly_emi.toFixed(2);
+    borrowerNameEl.textContent = loan.name || 'Loan Owner';
+    borrowerUPIEl.textContent = borrowerUPI;
     
     // Copy UPI button
     document.getElementById('copy-upi').onclick = () => {
-      navigator.clipboard.writeText('gagandeepcheemamandvi-1@okhdfcbank');
+      navigator.clipboard.writeText(borrowerUPI);
       toast('UPI ID copied to clipboard!', 'success');
     };
     
