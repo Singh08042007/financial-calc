@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>FinPilot — EMI & Budget Tracker</title>
     <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
@@ -14,7 +14,12 @@
           <span class="logo">⟡</span>
           <h1>FinPilot</h1>
         </div>
-        <nav class="nav">
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav class="nav" id="nav-menu">
           <button class="nav-btn" data-route="emi-calc">EMI Calculator</button>
           <button class="nav-btn" data-route="emi-tracker">EMI Tracker</button>
           <button class="nav-btn" data-route="budget">Budget Tracker</button>

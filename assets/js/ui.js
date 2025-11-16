@@ -16,13 +16,29 @@ function setActiveRoute(key) {
 }
 
 document.querySelectorAll('.nav-btn').forEach((btn) =>
-  btn.addEventListener('click', () => setActiveRoute(btn.dataset.route))
+  btn.addEventListener('click', () => {
+    setActiveRoute(btn.dataset.route);
+    // Close mobile menu after selection
+    const nav = document.getElementById('nav-menu');
+    const hamburger = document.getElementById('hamburger');
+    nav.classList.remove('active');
+    hamburger.classList.remove('active');
+  })
 );
 
 window.addEventListener('hashchange', () => {
   const key = location.hash.replace('#', '') || 'emi-calc';
   const found = routes.find((r) => r.key === key);
   setActiveRoute(found ? found.key : 'emi-calc');
+});
+
+// Hamburger menu toggle
+const hamburger = document.getElementById('hamburger');
+const navMenu = document.getElementById('nav-menu');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navMenu.classList.toggle('active');
 });
 
 // Theme toggle
