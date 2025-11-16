@@ -39,7 +39,7 @@ body {
 
 #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-.app { position: relative; z-index: 1; min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+.app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
 .app-header {
   display: flex; align-items: center; gap: 16px; justify-content: space-between;
@@ -91,7 +91,7 @@ body {
 }
 .user-dropdown .btn { width: 100%; justify-content: center; }
 
-.view { padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; }
+.view { padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; overflow-y: auto; }
 .section-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0 18px; flex-wrap: wrap; }
 .section-header h2 { margin: 0; font-size: 22px; color: var(--text); }
 .section-header .actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -272,8 +272,9 @@ dialog .card .muted { color: var(--muted); margin-bottom: 16px; }
   }
   
   .user-dropdown { right: -10px; min-width: 180px; }
-  .view { padding: 16px; }
-  .section-header h2 { font-size: 18px; }
+  .view { padding: 12px; }
+  .section-header { margin: 4px 0 12px; }
+  .section-header h2 { font-size: 16px; }
   .section-header .actions { width: 100%; }
   .btn { font-size: 12px; padding: 6px 10px; white-space: nowrap; }
   .stat strong { font-size: 18px; }
@@ -281,8 +282,9 @@ dialog .card .muted { color: var(--muted); margin-bottom: 16px; }
   .table th, .table td { padding: 8px 4px; white-space: nowrap; }
   .table th:first-child, .table td:first-child { position: sticky; left: 0; background: var(--card); z-index: 1; }
   .calc-grid button { padding: 12px; font-size: 15px; }
-  .scroll { max-height: 300px; }
+  .scroll { max-height: 250px; }
   input, select { font-size: 14px; }
-  .card { padding: 16px; }
-  .grid.two { grid-template-columns: 1fr; }
+  .card { padding: 12px; margin-bottom: 12px; }
+  .grid.two { grid-template-columns: 1fr; gap: 12px; }
+  .grid.one { gap: 12px; }
 }
