@@ -24,8 +24,8 @@
   --danger: #ff3b61;
 }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; min-height: 100vh; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; min-height: 100vh; width: 100%; overflow-x: hidden; }
 body {
   margin: 0;
   color: var(--text);
@@ -33,13 +33,12 @@ body {
               radial-gradient(1000px 700px at 80% 30%, rgba(58,209,255,0.12), transparent 60%),
               var(--bg);
   font: 14px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-  overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
 }
 
 #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-.app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+.app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; width: 100%; max-width: 100vw; overflow-x: hidden; }
 
 .app-header {
   display: flex; align-items: center; gap: 16px; justify-content: space-between;
@@ -91,7 +90,7 @@ body {
 }
 .user-dropdown .btn { width: 100%; justify-content: center; }
 
-.view { padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
+.view { padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; box-sizing: border-box; overflow-x: hidden; }
 .section-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0 18px; flex-wrap: wrap; }
 .section-header h2 { margin: 0; font-size: 22px; color: var(--text); }
 .section-header .actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -126,8 +125,8 @@ input:focus, select:focus { outline: 2px solid var(--primary); outline-offset: 2
 .stat span { color: var(--primary-2); font-size: 11px; display: block; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 6px; }
 .stat strong { font-size: 20px; color: var(--text); display: block; }
 
-.scroll { max-height: 380px; overflow: auto; }
-.scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.scroll { max-height: 380px; overflow-y: auto; overflow-x: hidden; }
+.scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
 .summary { display: grid; gap: 12px; }
 .table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .table th, .table td { text-align: left; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
@@ -275,8 +274,8 @@ dialog .card .muted { color: var(--muted); margin-bottom: 16px; }
   }
   
   .user-dropdown { right: -10px; min-width: 160px; }
-  .view { padding: 4px; }
-  .section-header { margin: 0 0 4px; }
+  .view { padding: 4px; width: 100%; max-width: 100vw; box-sizing: border-box; }
+  .section-header { margin: 0 0 4px; width: 100%; }
   .section-header h2 { font-size: 12px; }
   .section-header .actions { width: 100%; }
   .btn { font-size: 10px; padding: 4px 6px; white-space: nowrap; }
@@ -284,18 +283,21 @@ dialog .card .muted { color: var(--muted); margin-bottom: 16px; }
   .stat span { font-size: 9px; margin-bottom: 3px; }
   .stat strong { font-size: 12px; }
   .results { gap: 4px; grid-template-columns: repeat(3, 1fr); }
-  .table { font-size: 9px; min-width: 600px; }
-  .table th, .table td { padding: 4px 2px; white-space: nowrap; }
+  .table { font-size: 9px; width: 100%; }
+  .table th, .table td { padding: 4px 2px; white-space: normal; word-break: break-word; max-width: 80px; }
   .table th:first-child, .table td:first-child { position: sticky; left: 0; background: var(--card); z-index: 1; }
+  .calculator { width: 100%; max-width: 100%; box-sizing: border-box; }
   .calc-grid button { padding: 8px; font-size: 12px; }
-  .calc-grid { gap: 4px; }
-  .calc-display { font-size: 18px; padding: 8px; margin-bottom: 6px; }
-  .scroll { max-height: 140px; }
+  .calc-grid { gap: 4px; width: 100%; }
+  .calc-display { font-size: 18px; padding: 8px; margin-bottom: 6px; width: 100%; box-sizing: border-box; word-break: break-all; }
+  .scroll { max-height: 140px; overflow-y: auto; overflow-x: hidden; }
+  .scroll-x { max-width: 100vw; width: 100%; box-sizing: border-box; padding-right: 4px; }
   input, select { font-size: 13px; padding: 6px; }
   label > span { font-size: 11px; }
   label { gap: 4px; }
-  .form { gap: 8px; }
-  .card { padding: 6px; margin-bottom: 6px; border-radius: 8px; }
+  .form { gap: 8px; width: 100%; }
+  input, select { width: 100%; box-sizing: border-box; }
+  .card { padding: 6px; margin-bottom: 6px; border-radius: 8px; width: 100%; box-sizing: border-box; }
   .card h3 { font-size: 12px; margin-bottom: 6px; }
   .grid.two { grid-template-columns: 1fr; gap: 6px; }
   .grid.one { gap: 6px; }
